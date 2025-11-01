@@ -1,0 +1,40 @@
+/*
+ * SensorMatrix.h
+ *
+ *  Created on: Oct 31, 2025
+ *      Author: g0amer
+ */
+
+#ifndef SRC_SENSORMATRIX_SENSORMATRIX_H_
+#define SRC_SENSORMATRIX_SENSORMATRIX_H_
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#include "main.h"
+#include "adc.h"
+
+#define SM_ROWS 11
+#define SM_COLS 19
+
+//extern SensorMatrix sensorMatrix;
+
+
+typedef struct {
+	ADC_HandleTypeDef *hadc2;
+	ADC_HandleTypeDef *hadc3;
+	PCD_HandleTypeDef *hpcd_USB_OTG_FS;
+	uint16_t *smValuesFromADC2;
+	uint16_t *smValuesFromADC3;
+	uint16_t sensorMatrix[SM_ROWS][SM_COLS];
+} SensorMatrix;
+
+void SM_Init(SensorMatrix *sensorMatrix, ADC_HandleTypeDef *hadc2,
+		ADC_HandleTypeDef *hadc3, PCD_HandleTypeDef *hpcd_USB_OTG_FS);
+void SM_Scan(SensorMatrix *sensorMatrix);
+void SM_ChooseRow(uint8_t channel);
+float* SM_Get_XY_Position(SensorMatrix *sensorMatrix);
+
+extern SensorMatrix sensorMatrix;
+
+#endif /* SRC_SENSORMATRIX_SENSORMATRIX_H_ */

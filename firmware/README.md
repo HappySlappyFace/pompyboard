@@ -2,20 +2,11 @@
 
 ## Must read
 
-- https://probe.rs
-- https://github.com/stm32-rs/stm32f4xx-hal
-- https://github.com/rust-embedded/cortex-m
-- https://defmt.ferrous-systems.com
-- https://docs.rust-embedded.org/book
-- (optional) also check
-  - https://github.com/rust-lang/rustlings
-  - https://www.youtube.com/@therustybits/videos
-  - https://doc.rust-lang.org/stable/book
-
 ## Setting up
 
-1. [Setup devenv](https://devenv.sh/getting-started)
-   - we use this to manage tooling (i.e. no [rustup](https://rustup.rs/))
+1. [Setup STM32CubeIde](https://www.st.com/en/development-tools/stm32cubeide.html)
+2. Login to MyST in STM32CubeIde because it will download libraries/dev tools: Help -> STM32Cube -> Connection to MyST
+3. open the workspace under Firmware/PompyBoard/PompyBoard ( i think lmfao, i hate eclipse ) 
 
 ## Commands
 

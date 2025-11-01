@@ -1,0 +1,91 @@
+/*
+ * SensorMatrix.c
+ *
+ *  Created on: Oct 31, 2025
+ *      Author: g0amer
+ */
+
+#include "SensorMatrix.h"
+
+//SensorMatrix sensorMatrix;
+
+void SM_Init(SensorMatrix *sensorMatrix, ADC_HandleTypeDef *hadc2,
+		ADC_HandleTypeDef *hadc3, PCD_HandleTypeDef *hpcd_USB_OTG_FS) {
+//	HAL_ADC_Start(hadc2);
+//	HAL_ADC_Start(hadc3);
+	sensorMatrix->hadc2 = hadc2;
+	sensorMatrix->hadc3 = hadc3;
+	sensorMatrix->hpcd_USB_OTG_FS = hpcd_USB_OTG_FS;
+
+	sensorMatrix->smValuesFromADC2 = malloc(hadc2->Init.NbrOfConversion * sizeof(uint16_t));
+	sensorMatrix->smValuesFromADC3 = malloc(hadc3->Init.NbrOfConversion * sizeof(uint16_t));
+
+	HAL_ADC_Start_DMA(hadc2, (uint32_t*)sensorMatrix->smValuesFromADC2, hadc2->Init.NbrOfConversion);
+	HAL_ADC_Start_DMA(hadc3, (uint32_t*)sensorMatrix->smValuesFromADC3, hadc3->Init.NbrOfConversion);
+
+
+}
+
+//choose row by setting S3 to S0 pins accordingly
+void SM_ChooseRow(uint8_t channel) {
+	uint8_t S0 = (channel >> 0) & 1;
+	uint8_t S1 = (channel >> 1) & 1;
+	uint8_t S2 = (channel >> 2) & 1;
+	uint8_t S3 = (channel >> 3) & 1;
+	HAL_GPIO_WritePin(S0_GPIO_Port, S0_Pin, S0 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(S1_GPIO_Port, S1_Pin, S1 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(S2_GPIO_Port, S2_Pin, S2 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+	HAL_GPIO_WritePin(S3_GPIO_Port, S3_Pin, S3 ? GPIO_PIN_SET : GPIO_PIN_RESET);
+}
+
+void SM_Scan(SensorMatrix *sensorMatrix) {
+	// Scan each row
+	for (uint8_t row = 0; row < SM_ROWS; row++) {
+		SM_ChooseRow(row);
+		HAL_Delay(1); // Allow time for signals to stabilize
+
+		// Read values from ADC2 and ADC3
+		for (uint8_t col = 0; col < SM_COLS; col++) {
+			// Map columns to ADC values
+			if (col < sensorMatrix->hadc3->Init.NbrOfConversion) {
+				sensorMatrix->sensorMatrix[row][col] =
+						sensorMatrix->smValuesFromADC3[col];
+			} else {
+				sensorMatrix->sensorMatrix[row][col] =
+						sensorMatrix->smValuesFromADC2[col
+								- sensorMatrix->hadc2->Init.NbrOfConversion];
+			}
+		}
+	}
+}
+
+float* SM_Get_XY_Position(SensorMatrix *sensorMatrix) {
+	SM_Scan(sensorMatrix);
+	uint32_t totalX = 0;
+	uint32_t totalY = 0;
+	uint32_t totalWeight = 0;
+	float *lastPosition = malloc(2 * sizeof(float));
+
+	for (uint8_t row = 0; row < SM_ROWS; row++) {
+		for (uint8_t col = 0; col < SM_COLS; col++) {
+			uint16_t value = sensorMatrix->sensorMatrix[row][col];
+			totalX += col * value;
+			totalY += row * value;
+			totalWeight += value;
+		}
+	}
+
+	if (totalWeight == 0) {
+		return lastPosition; // No touch detected
+	}
+	float centerX = (float) totalX / totalWeight;
+	float centerY = (float) totalY / totalWeight;
+	lastPosition[0] = centerX;
+	lastPosition[1] = centerY;
+
+	return lastPosition;
+}
+
+void SM_Send_XY_Over_USB(SensorMatrix *sensorMatrix) {
+	//float *position = SM_Get_XY_Position(sensorMatrix);
+}

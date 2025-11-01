@@ -1,0 +1,17 @@
+02:13:47 **** Incremental Build of configuration Debug for project PompyBoard ****
+make -j8 all 
+arm-none-eabi-gcc "../Drivers/BSP/SensorMatrix/SensorMatrix.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F429xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -I"/home/hsf003/Documents/pompyboard/firmware/Pompyboard/PompyBoard/Drivers/BSP/SensorMatrix" -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Drivers/BSP/SensorMatrix/SensorMatrix.d" -MT"Drivers/BSP/SensorMatrix/SensorMatrix.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Drivers/BSP/SensorMatrix/SensorMatrix.o"
+arm-none-eabi-g++ -o "PompyBoard.elf" @"objects.list"   -mcpu=cortex-m4 -T"/home/hsf003/Documents/pompyboard/firmware/Pompyboard/PompyBoard/STM32F429IGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="PompyBoard.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -u _printf_float -u _scanf_float -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: PompyBoard.elf
+ 
+arm-none-eabi-size  PompyBoard.elf 
+arm-none-eabi-objdump -h -S PompyBoard.elf  > "PompyBoard.list"
+   text	   data	    bss	    dec	    hex	filename
+  37908	    468	   3940	  42316	   a54c	PompyBoard.elf
+Finished building: default.size.stdout
+ 
+Finished building: PompyBoard.list
+ 
+
+02:13:47 Build Finished. 0 errors, 0 warnings. (took 484ms)
+

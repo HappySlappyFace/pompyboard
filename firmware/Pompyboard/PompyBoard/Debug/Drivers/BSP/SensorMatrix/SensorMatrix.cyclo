@@ -1,0 +1,5 @@
+../Drivers/BSP/SensorMatrix/SensorMatrix.c:12:6:SM_Init	1
+../Drivers/BSP/SensorMatrix/SensorMatrix.c:30:6:SM_ChooseRow	1
+../Drivers/BSP/SensorMatrix/SensorMatrix.c:41:6:SM_Scan	4
+../Drivers/BSP/SensorMatrix/SensorMatrix.c:62:8:SM_Get_XY_Position	4
+../Drivers/BSP/SensorMatrix/SensorMatrix.c:89:6:SM_Send_XY_Over_USB	1
